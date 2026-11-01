@@ -1,0 +1,32 @@
+{
+  "name": "readfetch text (x402)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n cannot sign 402 in the HTTP Request node — use this Code node.\n// 1) Copy examples/readfetch_text_tool.mjs into your n8n host.\n// 2) npm install @x402/fetch @x402/evm viem in that directory.\n// 3) Set EVM_PRIVATE_KEY in n8n environment.\n// 4) Replace this block with: const { readfetchText } = await import('./readfetch_text_tool.mjs');\nconst url = $json.url ?? 'https://example.com';\nthrow new Error('Configure import of readfetch_text_tool.mjs — see examples/n8n-readfetch-text.json notes');"
+      },
+      "id": "code-readfetch",
+      "name": "readfetch_text (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "notes": "Prefer copying readfetch_text_tool.mjs into the workflow repo and importing locally. Set EVM_PRIVATE_KEY in the environment."
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[{ "node": "readfetch_text (Code)", "type": "main", "index": 0 }]]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

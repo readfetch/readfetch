@@ -1,0 +1,166 @@
+# Integrations — clients, MCP, frameworks
+
+How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims & feedback**, and **agent frameworks**. Host-specific MCP JSON: [HOSTS.md](./HOSTS.md). Live page: **[readfetch.com/integrations](https://readfetch.com/integrations)**.
+
+| Need | Section |
+|------|---------|
+| Node / Python (x402 handled) | [Official REST clients](#official-rest-clients-011) |
+| Cursor, Claude, VS Code, … | [MCP](#mcp-cursor-claude-etc) · [HOSTS.md](./HOSTS.md) |
+| LangChain, n8n, Vercel AI SDK | [Agent frameworks](#agent-frameworks) · [examples/](./examples/README.md) |
+| curl / raw 402 | [Free preflight](#free-preflight) · [First paid call](#first-paid-call-x402-v2) |
+| Repo / registry map | [REPOS.md](./REPOS.md) |
+| Short agent drop-in | [AGENTS.md](./AGENTS.md) |
+
+---
+
+## Free preflight
+
+`POST https://readfetch.com/v1/probe` is the **only free API call** — no wallet, no 402, no x402.
+
+```bash
+curl -sS -X POST https://readfetch.com/v1/probe \
+  -H 'content-type: application/json' \
+  -d '{"url":"https://example.com"}'
+```
+
+MCP: **`readfetch_probe`** with the same body — free without `EVM_PRIVATE_KEY` on the signing proxy.
+
+If `challenge` is false, pay for `POST /v1/text` with the same `url` (or read the **`preview`** on the probe response — up to ~400 characters). If `challenge` is true, use `/v1/scrape` (or `/v1/scrape/residential`).
+
+Residential is a **path**, not a JSON knob: same body as `/v1/scrape`, URL **`/v1/scrape/residential`**. Body `egress` keys are not in the catalogue and are ignored if sent.
+
+---
+
+## First paid call (x402 v2)
+
+**Recommended:** official clients below (`readfetch-client` / `@readfetch/client` **0.1.12+**) — all catalog routes, `call()` / `quote()`, payment helpers, feedback and claims.
+
+Manual REST:
+
+1. `POST https://readfetch.com/v1/text` (or any priced route) with `Content-Type: application/json`.
+2. Handle **402**: parse `accepts[0]`, sign, set **`PAYMENT-SIGNATURE`** (base64 JSON envelope).
+3. Retry the **same** request with the header.
+
+Every 402 includes **`extensions.bazaar`** for CDP/agentic.market discovery and a **`resource`** object with `tags` and `serviceName`.
+
+Example body: `{"url": "https://www.python.org/about/"}`
+
+### Coinbase Agentic Wallet
+
+```bash
+awal x402 pay https://readfetch.com/v1/text \
+  -d '{"url":"https://www.python.org/about/"}'
+```
+
+---
+
+## Official REST clients (0.1.12+)
+
+| Install | Registry | Source |
+|---------|----------|--------|
+| `pip install readfetch-client` | [PyPI](https://pypi.org/project/readfetch-client/) | [readfetch/client-py](https://github.com/readfetch/client-py) |
+| `npm install @readfetch/client` | [npm](https://www.npmjs.com/package/@readfetch/client) | [readfetch/client-js](https://github.com/readfetch/client-js) |
+
+**Environment:** `EVM_PRIVATE_KEY` (or `X402_BUYER_KEY`) before paid calls. **`probe()` is free** — no key. Optional: `READFETCH_MAX_PAYMENT_USD` (default `1`), `READFETCH_BASE_URL` (production host only unless `READFETCH_DEV=1`).
+
+### Python — probe, paid call, feedback
+
+```python
+# pip install readfetch-client
+# export EVM_PRIVATE_KEY=0x…  # paid routes only
+import asyncio
+from readfetch_client import call_with_meta, probe_with_meta, submit_feedback
+
+async def main():
+    check, request_id = await probe_with_meta("https://example.com")
+    if not check.get("challenge"):
+        meta = await call_with_meta("text", {"url": "https://example.com"})
+    if request_id:
+        await submit_feedback(request_id, "integration", "…")
+
+asyncio.run(main())
+```
+
+See [client-py README](https://github.com/readfetch/client-py/blob/main/README.md) for `payment_config()`, `quote()`, named helpers, `call()`.
+
+### Node — probe, paid call, feedback
+
+```javascript
+// npm install @readfetch/client
+// export EVM_PRIVATE_KEY=0x…
+import { callWithMeta, probeWithMeta, submitFeedback } from "@readfetch/client";
+
+const { data: check, requestId } = await probeWithMeta("https://example.com");
+if (!check.challenge) {
+  await callWithMeta("text", { url: "https://example.com" });
+}
+if (requestId) await submitFeedback(requestId, "integration", "…");
+```
+
+See [client-js README](https://github.com/readfetch/client-js/blob/main/README.md) for `paymentConfig()`, `quote()`, `paidFetch()`, `submitClaim()`.
+
+### Low-level x402 (no readfetch helpers)
+
+[`@x402/fetch`](https://www.npmjs.com/package/@x402/fetch) · [`x402[httpx,evm]`](https://pypi.org/project/x402/) · `awal x402 pay` — you implement host policy and retries yourself.
+
+---
+
+## MCP (Cursor, Claude, etc.)
+
+Tools at `POST https://readfetch.com/mcp` (streamable HTTP). Default: **`readfetch_probe`** then **`readfetch_text`**. **`readfetch_feedback`** (free) — bind `request_id` from **`X-Request-Id`**.
+
+Most hosts **cannot** attach `PAYMENT-SIGNATURE` on `tools/call`. Use the **stdio signing proxy**:
+
+```json
+{
+  "mcpServers": {
+    "readfetch": {
+      "command": "npx",
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.12"],
+      "env": { "EVM_PRIVATE_KEY": "0x…" }
+    }
+  }
+}
+```
+
+Package: [`@readfetch/mcp-x402-proxy`](https://www.npmjs.com/package/@readfetch/mcp-x402-proxy) · [GitHub](https://github.com/readfetch/mcp-x402-proxy) · [HOSTS.md](./HOSTS.md) · [/.well-known/mcp.json](https://readfetch.com/.well-known/mcp.json)
+
+---
+
+## Agent frameworks
+
+One client per language — wrap in your `@tool` / `tool()`. No separate LangChain/CrewAI package.
+
+| Stack | Client | Example |
+|-------|--------|---------|
+| Python (`@tool`) | `readfetch-client` | [readfetch_text_tool.py](./examples/readfetch_text_tool.py) |
+| PydanticAI | `readfetch-client` | [readfetch_pydantic_ai_tool.py](./examples/readfetch_pydantic_ai_tool.py) |
+| Node | `@readfetch/client` | [readfetch_text_tool.mjs](./examples/readfetch_text_tool.mjs) |
+| Vercel AI SDK | `@readfetch/client` + `ai` | [readfetch_vercel_ai_tool.mjs](./examples/readfetch_vercel_ai_tool.mjs) |
+| n8n | Code node + `@readfetch/client` | [n8n-readfetch-text.json](./examples/n8n-readfetch-text.json) |
+| MCP-only hosts | `@readfetch/mcp-x402-proxy@0.1.12` | [HOSTS.md](./HOSTS.md) · [mcp.cursor.json](./examples/mcp.cursor.json) |
+
+Recipes: **[readfetch.com/examples](https://readfetch.com/examples)**.
+
+---
+
+## Integrator feedback (not billing)
+
+| Issue | What to use |
+|-------|-------------|
+| Paid delivery (empty, truncated, wrong content you paid for) | `POST /v1/claims` with **`RECEIPT`** + EIP-191 signature — [docs#claims](https://readfetch.com/docs#claims) |
+| Confusing 402, MCP, docs, or site copy | `POST /v1/feedback` with **`X-Request-Id`** — [docs#feedback](https://readfetch.com/docs#feedback) |
+
+Clients: `submit_feedback` / `submitFeedback`. MCP: **`readfetch_feedback`** (`integration`, `docs`, `site`, `other`). Feedback never auto-credits.
+
+Every JSON API response includes **`readfetch.support`**; see `/llms.txt` and `/SKILL.md`.
+
+### Claims
+
+Only **`truncated`** is auto-approved for credits. **`empty`** returns 422 — probe before paying or escalate to `/v1/scrape`. See [SKILL.md](https://readfetch.com/SKILL.md).
+
+### Errors
+
+- **`billed: false`** — nothing was charged; read **`hint`**. On **`/v1/fetch`**, origin 4xx/5xx and empty bodies can still be **`billed: true`** — only transport failures and bot-check pages are unbilled.
+- Non-2xx: `{ "status", "error", "hint", "billed" }`.
+- Do not scrape this GitHub repo for API behavior; use **OpenAPI** and **x402-resources.json** on the live host.

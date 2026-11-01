@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "readfetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.12"]
+    }
+  }
+}
