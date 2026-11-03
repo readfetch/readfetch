@@ -6,7 +6,7 @@
 
 ## Free preflight (always first)
 
-**`POST /v1/probe`** is the only free call — no wallet, no 402. MCP **`readfetch_probe`** is the same (free without `EVM_PRIVATE_KEY`).
+**`POST /v1/probe`** is free — no wallet, no 402. So are `GET /v1/crawl/{id}` (poll a crawl job), `POST /v1/claims` and `POST /v1/feedback`. Everything else is a paid route. MCP **`readfetch_probe`** is the same free probe (no `EVM_PRIVATE_KEY` required).
 
 ```bash
 curl -sS -X POST https://readfetch.com/v1/probe \
@@ -32,7 +32,20 @@ Prices and schemas: `/.well-known/x402-resources.json`, `/openapi.json`. Routing
 2. Sign EIP-3009 for exactly `accepts[0].amount` → retry with **`PAYMENT-SIGNATURE`** (base64 JSON).
 3. **`billed: false`** means **not charged** — read **`hint`**. On **`/v1/fetch`**, origin 4xx/5xx and empty bodies may still be **`billed: true`** (bot-check pages and transport failures are not). Do not treat `billed: false` as success.
 
-**Clients (recommended):** `pip install readfetch-client` · `npm install @readfetch/client` — `probe()` is free; paid routes need `EVM_PRIVATE_KEY`. Low-level: `@x402/fetch` (JS), `x402[httpx,evm]` (Python), `awal x402 pay` (CLI).
+**Clients (recommended):** `pip install readfetch-client` · `npm install @readfetch/client`
+
+```python
+from readfetch import Client
+rf = Client(private_key="0x…")  # funded account with USDC on Base
+print(rf.fetch("https://example.com")["text"])
+```
+
+```javascript
+import { Client } from "@readfetch/client";
+const page = await new Client({ privateKey: "0x…" }).fetch("https://example.com");
+```
+
+Free probe: `Client().probe(url)` (Python) / `await new Client().probe(url)` (JS). Paid routes need `EVM_PRIVATE_KEY` or constructor key. Low-level: `@x402/fetch` (JS), `x402[httpx,evm]` (Python), `awal x402 pay` (CLI).
 
 | Package | GitHub |
 |---------|--------|
@@ -47,7 +60,7 @@ Repo map: [REPOS.md](./REPOS.md)
 Most hosts **cannot** sign x402 on `POST https://readfetch.com/mcp`. Use the stdio proxy:
 
 ```bash
-npx -y @readfetch/mcp-x402-proxy@0.1.12
+npx -y @readfetch/mcp-x402-proxy@0.1.14
 ```
 
 - **No env:** `readfetch_probe` + `tools/list` only (**free**); **`readfetch_feedback`** (free) for integration issues — pass `request_id` from the call’s **`X-Request-Id`**.

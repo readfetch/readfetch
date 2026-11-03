@@ -4,7 +4,7 @@ How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims
 
 | Need | Section |
 |------|---------|
-| Node / Python (x402 handled) | [Official REST clients](#official-rest-clients-011) |
+| Node / Python (x402 handled) | [Official REST clients](#official-rest-clients) |
 | Cursor, Claude, VS Code, … | [MCP](#mcp-cursor-claude-etc) · [HOSTS.md](./HOSTS.md) |
 | LangChain, n8n, Vercel AI SDK | [Agent frameworks](#agent-frameworks) · [examples/](./examples/README.md) |
 | curl / raw 402 | [Free preflight](#free-preflight) · [First paid call](#first-paid-call-x402-v2) |
@@ -15,7 +15,7 @@ How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims
 
 ## Free preflight
 
-`POST https://readfetch.com/v1/probe` is the **only free API call** — no wallet, no 402, no x402.
+`POST https://readfetch.com/v1/probe` is free — no wallet, no 402, no x402. `GET /v1/crawl/{id}`, `POST /v1/claims` and `POST /v1/feedback` are free too; every other route is paid.
 
 ```bash
 curl -sS -X POST https://readfetch.com/v1/probe \
@@ -33,7 +33,7 @@ Residential is a **path**, not a JSON knob: same body as `/v1/scrape`, URL **`/v
 
 ## First paid call (x402 v2)
 
-**Recommended:** official clients below (`readfetch-client` / `@readfetch/client` **0.1.12+**) — all catalog routes, `call()` / `quote()`, payment helpers, feedback and claims.
+**Recommended:** official clients below (`readfetch-client` / `@readfetch/client` **0.1.14+**) — pass `private_key` once; x402 on **402** is automatic.
 
 Manual REST:
 
@@ -54,50 +54,45 @@ awal x402 pay https://readfetch.com/v1/text \
 
 ---
 
-## Official REST clients (0.1.12+)
+## Official REST clients
 
 | Install | Registry | Source |
 |---------|----------|--------|
 | `pip install readfetch-client` | [PyPI](https://pypi.org/project/readfetch-client/) | [readfetch/client-py](https://github.com/readfetch/client-py) |
 | `npm install @readfetch/client` | [npm](https://www.npmjs.com/package/@readfetch/client) | [readfetch/client-js](https://github.com/readfetch/client-js) |
 
-**Environment:** `EVM_PRIVATE_KEY` (or `X402_BUYER_KEY`) before paid calls. **`probe()` is free** — no key. Optional: `READFETCH_MAX_PAYMENT_USD` (default `1`), `READFETCH_BASE_URL` (production host only unless `READFETCH_DEV=1`).
+**Environment:** `EVM_PRIVATE_KEY` (or constructor `private_key` / `privateKey`) before paid calls. **`Client().probe(url)` is free** — no key. Optional: `READFETCH_MAX_PAYMENT_USD` (default `1`), `READFETCH_BASE_URL` (production host only unless `READFETCH_DEV=1`).
 
-### Python — probe, paid call, feedback
+### Python
 
 ```python
 # pip install readfetch-client
-# export EVM_PRIVATE_KEY=0x…  # paid routes only
-import asyncio
-from readfetch_client import call_with_meta, probe_with_meta, submit_feedback
+from readfetch import Client
 
-async def main():
-    check, request_id = await probe_with_meta("https://example.com")
-    if not check.get("challenge"):
-        meta = await call_with_meta("text", {"url": "https://example.com"})
-    if request_id:
-        await submit_feedback(request_id, "integration", "…")
-
-asyncio.run(main())
+rf = Client(private_key="0x…")  # funded account with USDC on Base
+check = Client().probe("https://example.com")  # free
+if not check.get("challenge"):
+    print(rf.fetch("https://example.com")["text"])
+# other routes: await rf.call("scrape", {"url": "…"})
 ```
 
-See [client-py README](https://github.com/readfetch/client-py/blob/main/README.md) for `payment_config()`, `quote()`, named helpers, `call()`.
+See [client-py README](https://github.com/readfetch/client-py/blob/main/README.md) for async helpers, `quote()`, `submit_feedback`, every catalog route.
 
-### Node — probe, paid call, feedback
+### Node
 
 ```javascript
 // npm install @readfetch/client
-// export EVM_PRIVATE_KEY=0x…
-import { callWithMeta, probeWithMeta, submitFeedback } from "@readfetch/client";
+import { Client } from "@readfetch/client";
 
-const { data: check, requestId } = await probeWithMeta("https://example.com");
+const rf = new Client({ privateKey: "0x…" });
+const check = await new Client().probe("https://example.com");
 if (!check.challenge) {
-  await callWithMeta("text", { url: "https://example.com" });
+  console.log((await rf.fetch("https://example.com")).text);
 }
-if (requestId) await submitFeedback(requestId, "integration", "…");
+// await rf.call("scrape", { url: "…" });
 ```
 
-See [client-js README](https://github.com/readfetch/client-js/blob/main/README.md) for `paymentConfig()`, `quote()`, `paidFetch()`, `submitClaim()`.
+See [client-js README](https://github.com/readfetch/client-js/blob/main/README.md) for `paymentConfig()`, `quote()`, `submitClaim()`, every catalog route.
 
 ### Low-level x402 (no readfetch helpers)
 
@@ -116,7 +111,7 @@ Most hosts **cannot** attach `PAYMENT-SIGNATURE` on `tools/call`. Use the **stdi
   "mcpServers": {
     "readfetch": {
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.12"],
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.14"],
       "env": { "EVM_PRIVATE_KEY": "0x…" }
     }
   }
@@ -138,7 +133,7 @@ One client per language — wrap in your `@tool` / `tool()`. No separate LangCha
 | Node | `@readfetch/client` | [readfetch_text_tool.mjs](./examples/readfetch_text_tool.mjs) |
 | Vercel AI SDK | `@readfetch/client` + `ai` | [readfetch_vercel_ai_tool.mjs](./examples/readfetch_vercel_ai_tool.mjs) |
 | n8n | Code node + `@readfetch/client` | [n8n-readfetch-text.json](./examples/n8n-readfetch-text.json) |
-| MCP-only hosts | `@readfetch/mcp-x402-proxy@0.1.12` | [HOSTS.md](./HOSTS.md) · [mcp.cursor.json](./examples/mcp.cursor.json) |
+| MCP-only hosts | `@readfetch/mcp-x402-proxy@0.1.14` | [HOSTS.md](./HOSTS.md) · [mcp.cursor.json](./examples/mcp.cursor.json) |
 
 Recipes: **[readfetch.com/examples](https://readfetch.com/examples)**.
 

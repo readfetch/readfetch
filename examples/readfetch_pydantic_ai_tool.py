@@ -12,7 +12,7 @@ import asyncio
 import json
 import sys
 
-from readfetch_client import readfetch_text
+from readfetch import Client
 
 try:
     from pydantic_ai import Agent, RunContext
@@ -21,8 +21,9 @@ except ImportError as exc:
 
 
 async def _readfetch_text(url: str) -> str:
-    data = await readfetch_text(url)
-    return json.dumps(data, ensure_ascii=False)
+    rf = Client()
+    page = await rf.text(url)
+    return json.dumps(page, ensure_ascii=False)
 
 
 agent = Agent(
@@ -39,8 +40,8 @@ async def readfetch_text_tool(ctx: RunContext[None], url: str) -> str:
 
 async def _main() -> None:
     url = sys.argv[1] if len(sys.argv) > 1 else "https://example.com"
-    result = await _readfetch_text(url)
-    print(result)
+    result = await agent.run(f"Read this URL and summarize in one sentence: {url}")
+    print(result.output)
 
 
 if __name__ == "__main__":

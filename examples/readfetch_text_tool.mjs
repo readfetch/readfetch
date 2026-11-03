@@ -9,24 +9,22 @@
 
 import { pathToFileURL } from "node:url";
 import {
-  probeWithMeta,
-  readfetchText,
+  Client,
   readfetchTextToolDefinition,
   submitFeedback,
 } from "@readfetch/client";
 
-export { readfetchText, readfetchTextToolDefinition, probeWithMeta, submitFeedback };
+export { readfetchTextToolDefinition, submitFeedback };
 
 const url = process.argv[2] || "https://example.com";
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const { data: check, requestId } = await probeWithMeta(url);
-  if (requestId) {
-    console.error(`readfetch X-Request-Id (probe): ${requestId}`);
-  }
+  const rf = new Client(); // EVM_PRIVATE_KEY from env
+  const check = await rf.probe(url);
+  console.error(JSON.stringify({ probe: check }, null, 2));
   if (check.challenge) {
     console.error("probe: challenge — use /v1/scrape, not text");
     process.exit(1);
   }
-  const page = await readfetchText(url);
+  const page = await rf.fetch(url);
   console.log(JSON.stringify(page, null, 2));
 }
