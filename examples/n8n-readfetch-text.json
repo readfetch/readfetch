@@ -11,7 +11,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// n8n cannot sign 402 in the HTTP Request node — use this Code node.\n// 1) Copy examples/readfetch_text_tool.mjs into your n8n host.\n// 2) npm install @x402/fetch @x402/evm viem in that directory.\n// 3) Set EVM_PRIVATE_KEY in n8n environment.\n// 4) Replace this block with: const { readfetchText } = await import('./readfetch_text_tool.mjs');\nconst url = $json.url ?? 'https://example.com';\nthrow new Error('Configure import of readfetch_text_tool.mjs — see examples/n8n-readfetch-text.json notes');"
+        "jsCode": "// n8n cannot sign 402 in the HTTP Request node — use this Code node.\n// 1) Copy examples/readfetch_text_tool.mjs into your n8n host.\n// 2) npm install @readfetch/client in that directory.\n// 3) Set EVM_PRIVATE_KEY in n8n environment.\n// 4) Replace this block with: const { readfetchText } = await import('./readfetch_text_tool.mjs');\nconst url = $json.url ?? 'https://example.com';\nthrow new Error('Configure import of readfetch_text_tool.mjs — see examples/n8n-readfetch-text.json notes');"
       },
       "id": "code-readfetch",
       "name": "readfetch_text (Code)",
