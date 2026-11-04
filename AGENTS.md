@@ -2,11 +2,11 @@
 
 **Service:** https://readfetch.com · Pay per call in USDC on Base (x402 v2). No API key.
 
-**Integrator lanes:** paid delivery disputes → `POST /v1/claims` (receipt + signature). Confusing 402, MCP, docs, or site → `POST /v1/feedback` with **`X-Request-Id`** from that response (MCP: **`readfetch_feedback`**, free). Not for billing — see https://readfetch.com/docs#feedback.
+**Integrator lanes:** paid delivery disputes → `POST /v1/claims` (receipt + signature). Confusing 402, MCP, docs, or site → `POST /v1/feedback` with **`X-Request-Id`** from that response (MCP: **`readfetch_feedback`**). Not for billing — see https://readfetch.com/docs#feedback.
 
 ## Free preflight (always first)
 
-**`POST /v1/probe`** is free — no wallet, no 402. So are `GET /v1/crawl/{id}` (poll a crawl job), `POST /v1/claims` and `POST /v1/feedback`. Everything else is a paid route. MCP **`readfetch_probe`** is the same free probe (no `EVM_PRIVATE_KEY` required).
+**`POST /v1/probe`** is the free endpoint — no wallet, no 402. MCP **`readfetch_probe`** is the same call (no `EVM_PRIVATE_KEY` required). Everything else in the catalogue is a paid route unless you are polling a crawl job, filing a claim, or sending integrator feedback (see below).
 
 ```python
 from readfetch import Client
@@ -46,7 +46,7 @@ import { Client } from "@readfetch/client";
 const page = await new Client({ privateKey: "0x…" }).fetch("https://example.com");
 ```
 
-Free probe: `Client().probe(url)` (Python) / `await new Client().probe(url)` (JS). Paid routes need `EVM_PRIVATE_KEY` or constructor key. Low-level: `@x402/fetch` (JS), `x402[httpx,evm]` (Python), `awal x402 pay` (CLI).
+Free probe: `Client().probe(url)` (Python) / `await new Client().probe(url)` (JS). Paid routes need `EVM_PRIVATE_KEY` or constructor key — **`readfetch-client`**, **`@readfetch/client`**, or **`@readfetch/mcp-x402-proxy`** handle x402 automatically.
 
 | Package | GitHub |
 |---------|--------|
@@ -64,7 +64,7 @@ Most hosts **cannot** sign x402 on `POST https://readfetch.com/mcp`. Use the std
 npx -y @readfetch/mcp-x402-proxy@0.1.14
 ```
 
-- **No env:** `readfetch_probe` + `tools/list` only (**free**); **`readfetch_feedback`** (free) for integration issues — pass `request_id` from the call’s **`X-Request-Id`**.
+- **No env:** `readfetch_probe` + `tools/list` (probe is the free endpoint); **`readfetch_feedback`** for integration issues — pass `request_id` from the call’s **`X-Request-Id`**.
 - **`EVM_PRIVATE_KEY`:** paid tools (`readfetch_text`, …). Use a dedicated low-balance wallet.
 
 Copy-paste configs per host: [HOSTS.md](./HOSTS.md). Source: https://github.com/readfetch/mcp-x402-proxy

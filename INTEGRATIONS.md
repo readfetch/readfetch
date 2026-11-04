@@ -14,7 +14,7 @@ How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims
 
 ## Free preflight
 
-`POST https://readfetch.com/v1/probe` is free — no wallet, no 402, no x402. `GET /v1/crawl/{id}`, `POST /v1/claims` and `POST /v1/feedback` are free too; every other route is paid.
+`POST https://readfetch.com/v1/probe` is the free endpoint — no wallet, no 402, no x402. Every other catalogue route is paid (poll crawl jobs with `GET /v1/crawl/{id}` after a paid `POST /v1/crawl`; see Claims and Feedback sections for dispute paths).
 
 ```python
 # pip install readfetch-client
@@ -23,7 +23,7 @@ from readfetch import Client
 print(Client().probe("https://example.com"))
 ```
 
-MCP: **`readfetch_probe`** with the same body — free without `EVM_PRIVATE_KEY` on the signing proxy.
+MCP: **`readfetch_probe`** with the same body — no `EVM_PRIVATE_KEY` on the signing proxy.
 
 If `challenge` is false, pay for `POST /v1/text` with the same `url` (or read the **`preview`** on the probe response — up to ~400 characters). If `challenge` is true, use `/v1/scrape` (or `/v1/scrape/residential`).
 
@@ -37,14 +37,7 @@ Use official clients (`readfetch-client` / `@readfetch/client` **0.1.14+**) or *
 
 Every 402 includes **`extensions.bazaar`** for CDP/agentic.market discovery and a **`resource`** object with `tags` and `serviceName`.
 
-Example body: `{"url": "https://www.python.org/about/"}`
-
-### Coinbase Agentic Wallet
-
-```bash
-awal x402 pay https://readfetch.com/v1/text \
-  -d '{"url":"https://www.python.org/about/"}'
-```
+Example body: `{"url": "https://www.python.org/about/"}` — use **`readfetch-client`**, **`@readfetch/client`**, or **`@readfetch/mcp-x402-proxy`** (see below). Direct HTTP without a signing client stops at **402**.
 
 ---
 
@@ -88,15 +81,11 @@ if (!check.challenge) {
 
 See [client-js README](https://github.com/readfetch/client-js/blob/main/README.md) for `paymentConfig()`, `quote()`, `submitClaim()`, every catalog route.
 
-### Low-level x402 (no readfetch helpers)
-
-[`@x402/fetch`](https://www.npmjs.com/package/@x402/fetch) · [`x402[httpx,evm]`](https://pypi.org/project/x402/) · `awal x402 pay` — you implement host policy and retries yourself.
-
 ---
 
 ## MCP (Cursor, Claude, etc.)
 
-Tools at `POST https://readfetch.com/mcp` (streamable HTTP). Default: **`readfetch_probe`** then **`readfetch_text`**. **`readfetch_feedback`** (free) — bind `request_id` from **`X-Request-Id`**.
+Tools at `POST https://readfetch.com/mcp` (streamable HTTP). Default: **`readfetch_probe`** then **`readfetch_text`**. **`readfetch_feedback`** — bind `request_id` from **`X-Request-Id`**.
 
 Most hosts **cannot** attach `PAYMENT-SIGNATURE` on `tools/call`. Use the **stdio signing proxy**:
 
@@ -137,7 +126,7 @@ Recipes: **[readfetch.com/examples](https://readfetch.com/examples)**.
 
 | Issue | What to use |
 |-------|-------------|
-| Paid delivery (empty, truncated, wrong content you paid for) | `POST /v1/claims` with **`RECEIPT`** + EIP-191 signature — [docs#claims](https://readfetch.com/docs#claims) |
+| Paid delivery (`truncated`, or `wrong_content` after manual review) | `POST /v1/claims` with **`RECEIPT`** + EIP-191 signature — [docs#claims](https://readfetch.com/docs#claims) |
 | Confusing 402, MCP, docs, or site copy | `POST /v1/feedback` with **`X-Request-Id`** — [docs#feedback](https://readfetch.com/docs#feedback) |
 
 Clients: `submit_feedback` / `submitFeedback`. MCP: **`readfetch_feedback`** (`integration`, `docs`, `site`, `other`). Feedback never auto-credits.

@@ -2,7 +2,7 @@
 
 Package: **`@readfetch/mcp-x402-proxy@0.1.14`** · Node.js 20+ · [GitHub](https://github.com/readfetch/mcp-x402-proxy)
 
-**Default path:** `readfetch_probe` (free, no wallet; optional ~400-char `preview` on HTML pages) → `readfetch_text` with the same `url`. If probe reports `challenge: true`, use `readfetch_scrape`. After a confusing call, **`readfetch_feedback`** (free) — bind with `request_id` from **`X-Request-Id`** ([docs#feedback](https://readfetch.com/docs#feedback)).
+**Default path:** `readfetch_probe` (no wallet; optional ~400-char `preview` on HTML pages) → `readfetch_text` with the same `url`. If probe reports `challenge: true`, use `readfetch_scrape`. After a confusing call, **`readfetch_feedback`** — bind with `request_id` from **`X-Request-Id`** ([docs#feedback](https://readfetch.com/docs#feedback)).
 
 | Mode | `EVM_PRIVATE_KEY` | What works |
 |------|-------------------|------------|
@@ -140,4 +140,4 @@ CLI: `cline mcp add readfetch --yes -- npx -y @readfetch/mcp-x402-proxy@0.1.14`
 Use instead:
 
 - **This stdio proxy** on a machine you control, or
-- **REST + x402** from your tool executor (`readfetch-client`, `@readfetch/client`, `awal x402 pay`, or raw `@x402/fetch` / `x402[httpx]`).
+- **REST** via **`readfetch-client`** / **`@readfetch/client`** from your tool executor (x402 handled for you).
