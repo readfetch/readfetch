@@ -75,7 +75,7 @@ Use **`readfetch-client`** / **`@readfetch/client`** or **`@readfetch/mcp-x402-p
 | `/v1/batch` | $0.0015/page | Up to 50 URLs, one payment |
 | `/v1/scrape/residential` | $0.02 | Render via residential egress |
 | `/v1/probe` | free | Preview before pay |
-| `GET /v1/crawl/{id}` | free | Poll async crawl jobs |
+| `GET /v1/crawl/{id}` | $0 | Poll async crawl jobs |
 
 Residential is **`POST /v1/scrape/residential`** (same JSON as scrape), not an `egress` body field. Details: [INTEGRATIONS.md](./INTEGRATIONS.md).
 
