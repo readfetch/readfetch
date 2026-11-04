@@ -52,21 +52,18 @@ Copy-paste host configs: [HOSTS.md](./HOSTS.md). **Full client + MCP guide:** [I
 
 ## Start here (free)
 
-```bash
-curl -sS -X POST https://readfetch.com/v1/probe \
-  -H 'content-type: application/json' \
-  -d '{"url":"https://example.com"}'
+```python
+# pip install readfetch-client
+from readfetch import Client
+
+print(Client().probe("https://example.com"))
 ```
 
 `/v1/probe` is free: metadata plus an optional **`preview`** (~400 characters of `/v1/text` extraction when HTML and not a bot wall) before you pay.
 
-## Pay and call (curl)
+## Pay and call
 
-1. **`POST /v1/probe`** (free) — then **`/v1/text`** or **`/v1/scrape`** from the result.
-2. On **402**, read the quote in the body and `PAYMENT-REQUIRED` header.
-3. Sign the USDC authorization (x402 v2), retry with **`PAYMENT-SIGNATURE`**.
-
-Prefer clients over hand-rolled 402: [INTEGRATIONS.md](./INTEGRATIONS.md).
+Use **`readfetch-client`** / **`@readfetch/client`** or **`@readfetch/mcp-x402-proxy`** — see [INTEGRATIONS.md](./INTEGRATIONS.md).
 
 ## Endpoints (USD per call)
 

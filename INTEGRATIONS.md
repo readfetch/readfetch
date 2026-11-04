@@ -16,10 +16,11 @@ How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims
 
 `POST https://readfetch.com/v1/probe` is free — no wallet, no 402, no x402. `GET /v1/crawl/{id}`, `POST /v1/claims` and `POST /v1/feedback` are free too; every other route is paid.
 
-```bash
-curl -sS -X POST https://readfetch.com/v1/probe \
-  -H 'content-type: application/json' \
-  -d '{"url":"https://example.com"}'
+```python
+# pip install readfetch-client
+from readfetch import Client
+
+print(Client().probe("https://example.com"))
 ```
 
 MCP: **`readfetch_probe`** with the same body — free without `EVM_PRIVATE_KEY` on the signing proxy.

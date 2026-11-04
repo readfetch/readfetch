@@ -8,10 +8,11 @@
 
 **`POST /v1/probe`** is free — no wallet, no 402. So are `GET /v1/crawl/{id}` (poll a crawl job), `POST /v1/claims` and `POST /v1/feedback`. Everything else is a paid route. MCP **`readfetch_probe`** is the same free probe (no `EVM_PRIVATE_KEY` required).
 
-```bash
-curl -sS -X POST https://readfetch.com/v1/probe \
-  -H 'content-type: application/json' \
-  -d '{"url":"https://example.com"}'
+```python
+from readfetch import Client
+
+check = Client().probe("https://example.com")
+print(check.get("challenge"), check.get("preview"))
 ```
 
 Returns status, title, size, `challenge`, and often a **`preview`** (~400 characters). Then pay only if you need the full page.
