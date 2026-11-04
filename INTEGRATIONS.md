@@ -7,7 +7,6 @@ How to integrate readfetch: **REST clients**, **MCP**, **402 payment**, **claims
 | Node / Python (x402 handled) | [Official REST clients](#official-rest-clients) |
 | Cursor, Claude, VS Code, … | [MCP](#mcp-cursor-claude-etc) · [HOSTS.md](./HOSTS.md) |
 | LangChain, n8n, Vercel AI SDK | [Agent frameworks](#agent-frameworks) · [examples/](./examples/README.md) |
-| curl / raw 402 | [Free preflight](#free-preflight) · [First paid call](#first-paid-call-x402-v2) |
 | Repo / registry map | [REPOS.md](./REPOS.md) |
 | Short agent drop-in | [AGENTS.md](./AGENTS.md) |
 
@@ -31,15 +30,9 @@ Residential is a **path**, not a JSON knob: same body as `/v1/scrape`, URL **`/v
 
 ---
 
-## First paid call (x402 v2)
+## Paid calls (x402 v2)
 
-**Recommended:** official clients below (`readfetch-client` / `@readfetch/client` **0.1.14+**) — pass `private_key` once; x402 on **402** is automatic.
-
-Manual REST:
-
-1. `POST https://readfetch.com/v1/text` (or any priced route) with `Content-Type: application/json`.
-2. Handle **402**: parse `accepts[0]`, sign, set **`PAYMENT-SIGNATURE`** (base64 JSON envelope).
-3. Retry the **same** request with the header.
+Use official clients (`readfetch-client` / `@readfetch/client` **0.1.14+**) or **`@readfetch/mcp-x402-proxy`** — pass `private_key` / `EVM_PRIVATE_KEY` once; the 402 → pay → retry loop is automatic.
 
 Every 402 includes **`extensions.bazaar`** for CDP/agentic.market discovery and a **`resource`** object with `tags` and `serviceName`.
 

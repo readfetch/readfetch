@@ -29,7 +29,7 @@ Prices and schemas: `/.well-known/x402-resources.json`, `/openapi.json`. Routing
 ## Paying (REST)
 
 1. POST without payment → **402** + quote in body / `PAYMENT-REQUIRED` (402 `hint` and `discovery.probe` remind you probe is free).
-2. Sign EIP-3009 for exactly `accepts[0].amount` → retry with **`PAYMENT-SIGNATURE`** (base64 JSON).
+2. **`readfetch-client` / `@readfetch/client`** (or **`@readfetch/mcp-x402-proxy`** for MCP) complete payment and retry automatically.
 3. **`billed: false`** means **not charged** — read **`hint`**. On **`/v1/fetch`**, origin 4xx/5xx and empty bodies may still be **`billed: true`** (bot-check pages and transport failures are not). Do not treat `billed: false` as success.
 
 **Clients (recommended):** `pip install readfetch-client` · `npm install @readfetch/client`
