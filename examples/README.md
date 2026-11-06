@@ -1,6 +1,6 @@
 # Framework examples
 
-Thin wrappers around **`readfetch-client`** / **`@readfetch/client`** (**0.1.15+**) — `Client(private_key=…)` then `fetch(url)` or `await client.call(…)`; probe first with `Client().probe(url)` (free).
+Thin wrappers around **`readfetch-client`** / **`@readfetch/client`** (**0.1.16+**) — `Client(private_key=…)` then `fetch(url)` or `await client.call(…)`; probe first with `Client().probe(url)` (free).
 
 **Hub:** [INTEGRATIONS.md](../INTEGRATIONS.md) · [readfetch.com/integrations](https://readfetch.com/integrations)
 
@@ -13,7 +13,7 @@ Thin wrappers around **`readfetch-client`** / **`@readfetch/client`** (**0.1.15+
 | [n8n-readfetch-text.json](./n8n-readfetch-text.json) | n8n Code node scaffold |
 | [mcp.cursor.json](./mcp.cursor.json) | Cursor MCP snippet |
 
-**MCP hosts:** [HOSTS.md](../HOSTS.md) · [`@readfetch/mcp-x402-proxy@0.1.15`](https://github.com/readfetch/mcp-x402-proxy).
+**MCP hosts:** [HOSTS.md](../HOSTS.md) · [`@readfetch/mcp-x402-proxy@0.1.16`](https://github.com/readfetch/mcp-x402-proxy).
 
 **Repos:** [REPOS.md](../REPOS.md) · [AGENTS.md](../AGENTS.md) · [CLAUDE.md](../CLAUDE.md)
 

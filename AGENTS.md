@@ -61,7 +61,7 @@ Repo map: [REPOS.md](./REPOS.md)
 Most hosts **cannot** sign x402 on `POST https://readfetch.com/mcp`. Use the stdio proxy:
 
 ```bash
-npx -y @readfetch/mcp-x402-proxy@0.1.15
+npx -y @readfetch/mcp-x402-proxy@0.1.16
 ```
 
 - **No env:** `readfetch_probe` + `tools/list` (probe is the free endpoint); **`readfetch_feedback`** for integration issues — pass `request_id` from the call’s **`X-Request-Id`**.

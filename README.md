@@ -25,7 +25,7 @@ No API key; reading routes charge only when content is delivered (`billed: true`
 
 ## Clients & integrations (app code)
 
-Official packages (**0.1.15+**) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
+Official packages (**0.1.16+**) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
 
 ```bash
 pip install readfetch-client          # Python → github.com/readfetch/client-py
@@ -35,7 +35,7 @@ npm install @readfetch/client         # Node   → github.com/readfetch/client-j
 **MCP hosts** (Cursor, Claude Desktop, …) — most cannot sign x402 on the remote MCP URL. Use the stdio proxy:
 
 ```bash
-npx -y @readfetch/mcp-x402-proxy@0.1.15
+npx -y @readfetch/mcp-x402-proxy@0.1.16
 ```
 
 Copy-paste host configs: [HOSTS.md](./HOSTS.md). **Full client + MCP guide:** [INTEGRATIONS.md](./INTEGRATIONS.md).
