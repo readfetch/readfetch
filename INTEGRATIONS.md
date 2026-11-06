@@ -33,7 +33,7 @@ Residential is a **path**, not a JSON knob: same body as `/v1/scrape`, URL **`/v
 
 ## Paid calls (x402 v2)
 
-Use official clients (`readfetch-client` / `@readfetch/client` **0.1.16+**) or **`@readfetch/mcp-x402-proxy`** — pass `private_key` / `EVM_PRIVATE_KEY` once; the 402 → pay → retry loop is automatic.
+Use official clients (`readfetch-client` / `@readfetch/client` **0.1.17+**) or **`@readfetch/mcp-x402-proxy`** — pass `private_key` / `EVM_PRIVATE_KEY` once; the 402 → pay → retry loop is automatic.
 
 Every 402 includes **`extensions.bazaar`** for CDP/agentic.market discovery and a **`resource`** object with `tags` and `serviceName`.
 
@@ -94,7 +94,7 @@ Most hosts **cannot** attach `PAYMENT-SIGNATURE` on `tools/call`. Use the **stdi
   "mcpServers": {
     "readfetch": {
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"],
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"],
       "env": { "EVM_PRIVATE_KEY": "0x…" }
     }
   }
@@ -116,7 +116,7 @@ One client per language — wrap in your `@tool` / `tool()`. No separate LangCha
 | Node | `@readfetch/client` | [readfetch_text_tool.mjs](./examples/readfetch_text_tool.mjs) |
 | Vercel AI SDK | `@readfetch/client` + `ai` | [readfetch_vercel_ai_tool.mjs](./examples/readfetch_vercel_ai_tool.mjs) |
 | n8n | Code node + `@readfetch/client` | [n8n-readfetch-text.json](./examples/n8n-readfetch-text.json) |
-| MCP-only hosts | `@readfetch/mcp-x402-proxy@0.1.16` | [HOSTS.md](./HOSTS.md) · [mcp.cursor.json](./examples/mcp.cursor.json) |
+| MCP-only hosts | `@readfetch/mcp-x402-proxy@0.1.17` | [HOSTS.md](./HOSTS.md) · [mcp.cursor.json](./examples/mcp.cursor.json) |
 
 Recipes: **[readfetch.com/examples](https://readfetch.com/examples)**.
 

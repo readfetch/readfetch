@@ -1,6 +1,6 @@
 # MCP host configs (stdio signing proxy)
 
-Package: **`@readfetch/mcp-x402-proxy@0.1.16`** · Node.js 20+ · [GitHub](https://github.com/readfetch/mcp-x402-proxy)
+Package: **`@readfetch/mcp-x402-proxy@0.1.17`** · Node.js 20+ · [GitHub](https://github.com/readfetch/mcp-x402-proxy)
 
 **Default path:** `readfetch_probe` (no wallet; optional ~400-char `preview` on HTML pages) → `readfetch_text` with the same `url`. If probe reports `challenge: true`, use `readfetch_scrape`. After a confusing call, **`readfetch_feedback`** — bind with `request_id` from **`X-Request-Id`** ([docs#feedback](https://readfetch.com/docs#feedback)).
 
@@ -21,7 +21,7 @@ Restart the client after editing config. **Never commit a real private key** —
     "readfetch": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
     }
   }
 }
@@ -42,7 +42,7 @@ Paid tools — add `env`:
   "mcpServers": {
     "readfetch": {
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
     }
   }
 }
@@ -53,7 +53,7 @@ Paid tools — add `env`:
 **File:** project `.mcp.json` or user config · CLI:
 
 ```bash
-claude mcp add readfetch -- npx -y @readfetch/mcp-x402-proxy@0.1.16
+claude mcp add readfetch -- npx -y @readfetch/mcp-x402-proxy@0.1.17
 ```
 
 Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
@@ -68,7 +68,7 @@ Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
     "readfetch": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
     }
   }
 }
@@ -83,7 +83,7 @@ Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
   "mcpServers": {
     "readfetch": {
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
     }
   }
 }
@@ -97,7 +97,7 @@ Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
 {
   "name": "readfetch",
   "command": "npx",
-  "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+  "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
 }
 ```
 
@@ -110,7 +110,7 @@ Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
   "mcpServers": {
     "readfetch": {
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"],
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"],
       "disabled": false,
       "autoApprove": []
     }
@@ -118,7 +118,7 @@ Same JSON shape as Claude Desktop under `mcpServers.readfetch`.
 }
 ```
 
-CLI: `cline mcp add readfetch --yes -- npx -y @readfetch/mcp-x402-proxy@0.1.16`
+CLI: `cline mcp add readfetch --yes -- npx -y @readfetch/mcp-x402-proxy@0.1.17`
 
 ## Goose
 
@@ -128,7 +128,7 @@ CLI: `cline mcp add readfetch --yes -- npx -y @readfetch/mcp-x402-proxy@0.1.16`
 {
   "readfetch": {
     "command": "npx",
-    "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.16"]
+    "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.17"]
   }
 }
 ```
