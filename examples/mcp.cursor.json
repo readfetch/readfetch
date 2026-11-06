@@ -3,7 +3,7 @@
     "readfetch": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.14"]
+      "args": ["-y", "@readfetch/mcp-x402-proxy@0.1.15"]
     }
   }
 }
