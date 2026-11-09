@@ -1,6 +1,6 @@
 # Framework examples
 
-Thin wrappers around **`readfetch-client`** / **`@readfetch/client`** (**0.1.17+**) — `Client(private_key=…)` then `fetch(url)` or `await client.call(…)`; probe first with `Client().probe(url)` (free).
+Thin wrappers around **`readfetch-client`** / **`@readfetch/client`** (**0.1.18+**) — `Client(private_key=…)` then `fetch(url)` or `await client.call(…)`; probe first with `Client().probe(url)` (free).
 
 **Hub:** [INTEGRATIONS.md](../INTEGRATIONS.md) · [readfetch.com/integrations](https://readfetch.com/integrations)
 

@@ -33,7 +33,7 @@ Residential is a **path**, not a JSON knob: same body as `/v1/scrape`, URL **`/v
 
 ## Paid calls (x402 v2)
 
-Use official clients (`readfetch-client` / `@readfetch/client` **0.1.17+**) or **`@readfetch/mcp-x402-proxy`** — pass `private_key` / `EVM_PRIVATE_KEY` once; the 402 → pay → retry loop is automatic.
+Use official clients (`readfetch-client` / `@readfetch/client` **0.1.18+**) or **`@readfetch/mcp-x402-proxy`** — pass `private_key` / `EVM_PRIVATE_KEY` once; the 402 → pay → retry loop is automatic.
 
 Every 402 includes **`extensions.bazaar`** for CDP/agentic.market discovery and a **`resource`** object with `tags` and `serviceName`.
 

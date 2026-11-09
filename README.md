@@ -25,7 +25,7 @@ No API key; reading routes charge only when content is delivered (`billed: true`
 
 ## Clients & integrations (app code)
 
-Official packages (**0.1.17+**) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
+Official packages (**0.1.18+**) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
 
 ```bash
 pip install readfetch-client          # Python → github.com/readfetch/client-py
