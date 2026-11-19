@@ -15,7 +15,7 @@ check = Client().probe("https://example.com")
 print(check.get("challenge"), check.get("preview"))
 ```
 
-Returns status, title, size, `challenge`, and often a **`preview`** (~400 characters). Then pay only if you need the full page.
+Returns status, title, size, `challenge`, and often a **`preview`** — the full extracted text for your first 3 probes each day, ~400 characters after that. Then pay only if you need more.
 
 ## Default call path
 
@@ -61,7 +61,7 @@ Repo map: [REPOS.md](./REPOS.md)
 Most hosts **cannot** sign x402 on `POST https://readfetch.com/mcp`. Use the stdio proxy:
 
 ```bash
-npx -y @readfetch/mcp-x402-proxy@0.1.17
+npx -y @readfetch/mcp-x402-proxy@latest
 ```
 
 - **No env:** `readfetch_probe` + `tools/list` (probe is the free endpoint); **`readfetch_feedback`** for integration issues — pass `request_id` from the call’s **`X-Request-Id`**.

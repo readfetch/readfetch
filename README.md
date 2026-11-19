@@ -25,7 +25,7 @@ No API key; reading routes charge only when content is delivered (`billed: true`
 
 ## Clients & integrations (app code)
 
-Official packages (**0.1.18+**) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
+Official packages (**latest** on npm / PyPI) — pass `private_key` to `Client`; x402 on **402** is automatic (`fetch(url)` → `/v1/text`):
 
 ```bash
 pip install readfetch-client          # Python → github.com/readfetch/client-py
@@ -35,7 +35,7 @@ npm install @readfetch/client         # Node   → github.com/readfetch/client-j
 **MCP hosts** (Cursor, Claude Desktop, …) — most cannot sign x402 on the remote MCP URL. Use the stdio proxy:
 
 ```bash
-npx -y @readfetch/mcp-x402-proxy@0.1.17
+npx -y @readfetch/mcp-x402-proxy@latest
 ```
 
 Copy-paste host configs: [HOSTS.md](./HOSTS.md). **Full client + MCP guide:** [INTEGRATIONS.md](./INTEGRATIONS.md).
@@ -59,7 +59,7 @@ from readfetch import Client
 print(Client().probe("https://example.com"))
 ```
 
-`/v1/probe` is free: metadata plus an optional **`preview`** (~400 characters of `/v1/text` extraction when HTML and not a bot wall) before you pay.
+`/v1/probe` is free: metadata, and the **full extracted text** for the first **3 probes per IP per day** (a ~400-character `preview` after that) before you pay.
 
 ## Pay and call
 
@@ -69,12 +69,13 @@ Use **`readfetch-client`** / **`@readfetch/client`** or **`@readfetch/mcp-x402-p
 
 | Route | Price | Role |
 |-------|-------|------|
-| `/v1/fetch` | $0.003 | Raw HTTP / APIs |
+| `/v1/fetch` | $0.0015 | Raw HTTP / APIs |
+| `/v1/text` | $0.002 | Text and metadata, boilerplate stripped |
 | `/v1/section`, `/v1/diff`, `/v1/screenshot`, `/v1/crawl` | $0.003 | Section, change detection, screenshot, async crawl |
-| `/v1/text`, `/v1/map`, `/v1/scrape`, `/v1/pdf`, `/v1/search` | $0.005 | Text, site map, render, PDF, search |
+| `/v1/map`, `/v1/scrape`, `/v1/pdf`, `/v1/search` | $0.005 | Site map, render, PDF, search |
 | `/v1/batch` | $0.0015/page | Up to 50 URLs, one payment |
 | `/v1/scrape/residential` | $0.02 | Render via residential egress |
-| `/v1/probe` | free | Preview before pay |
+| `/v1/probe` | free | Full text for the first 3 probes per IP per day, then a ~400-character preview |
 | `GET /v1/crawl/{id}` | $0 | Poll async crawl jobs |
 
 Residential is **`POST /v1/scrape/residential`** (same JSON as scrape), not an `egress` body field. Details: [INTEGRATIONS.md](./INTEGRATIONS.md).
