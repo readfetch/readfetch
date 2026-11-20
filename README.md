@@ -72,7 +72,8 @@ Use **`readfetch-client`** / **`@readfetch/client`** or **`@readfetch/mcp-x402-p
 | `/v1/fetch` | $0.0015 | Raw HTTP / APIs |
 | `/v1/text` | $0.002 | Text and metadata, boilerplate stripped |
 | `/v1/section`, `/v1/diff`, `/v1/screenshot`, `/v1/crawl` | $0.003 | Section, change detection, screenshot, async crawl |
-| `/v1/map`, `/v1/scrape`, `/v1/pdf`, `/v1/search` | $0.005 | Site map, render, PDF, search |
+| `/v1/map` | $0.002 | Site map, robots, feeds |
+| `/v1/scrape`, `/v1/pdf`, `/v1/search` | $0.005 | Render, PDF, search |
 | `/v1/batch` | $0.0015/page | Up to 50 URLs, one payment |
 | `/v1/scrape/residential` | $0.02 | Render via residential egress |
 | `/v1/probe` | free | Full text for the first 3 probes per IP per day, then a ~400-character preview |
